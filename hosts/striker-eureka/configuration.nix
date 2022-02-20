@@ -25,7 +25,7 @@
   };
 
   networking = { 
-        hostName = "nixos-nextcloud"; # Define your hostname.
+        hostName = "striker-eureka"; # Define your hostname.
         timeServers = [ "time.cloudflare.com" ];
   };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.

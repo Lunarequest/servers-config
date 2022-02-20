@@ -25,7 +25,7 @@
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
   networking = {
-        hostName = "nix-server"; # Define your hostname.
+        hostName = "cherno-alpha"; # Define your hostname.
         timeServers = [ "time.cloudflare.com" ]; # time servers for ntp
   };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
