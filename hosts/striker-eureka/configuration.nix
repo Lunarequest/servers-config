@@ -4,8 +4,20 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./services
     ];
-  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs.config = {
+    allowUnfree = true;
+    packageOverrides = pkgs: {
+      cloudflareupdated = {
+        cloudflareupdatedbin = import (builtins.fetchTarball 
+          "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz"
+          );
+      };
+    };
+  };
+
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
@@ -77,6 +89,9 @@
                 enable = true;
                 userServices = true;
         };
+  };
+  cloudflareupdated.services = {
+    cloudflareupdatedbin.enable = true;
   };
   # Enable sound.
   # sound.enable = true;
