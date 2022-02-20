@@ -15,7 +15,7 @@
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
   nix = {
-    autoOptimiseStore = true;
+    settings.auto-optimise-store = true;
     gc = {
       automatic = true;
       dates = "weekly";
