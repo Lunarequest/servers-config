@@ -4,6 +4,12 @@
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
+  nixpkgs.config = {
+    packageOverrides = pkgs: {
+      blog = import (builtins.fetchTarball 
+          "https://codeberg.org/lunarequest/myblog/archive/be800165ac.tar.gz");
+    };
+  };
 
   nix = {
     settings.auto-optimise-store = true;
@@ -77,7 +83,9 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = 
+  with pkgs;
+  [
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
@@ -86,6 +94,7 @@
     nixfmt
     bpytop
     screen
+    blog.packages.x86_64-linux.website
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -100,12 +109,13 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.nginx = {
+  services.nginx = with pkgs;
+  {
     enable = true;
     virtualHosts = {
       "nullrequest.com" = {
         onlySSL = true;
-        root = "/data/webserver/myblog/";
+        root = "${blog.packages.x86_64-linux.website}";
         sslCertificate = "/etc/ssl/nullrequest.pem";
         sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = { 

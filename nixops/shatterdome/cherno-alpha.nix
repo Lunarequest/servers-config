@@ -1,3 +1,1 @@
-{ 
-     cherno-alpha = import ../../hosts/cherno-alpha/configuration.nix;
-}
+{cherno-alpha = import ../../hosts/cherno-alpha/configuration.nix;}
