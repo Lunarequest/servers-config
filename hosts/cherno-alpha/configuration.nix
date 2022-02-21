@@ -3,6 +3,7 @@
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ../common/security.nix
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {

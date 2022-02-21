@@ -5,6 +5,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./services
+      ../common/security.nix
     ];
 
   nixpkgs.config = {
