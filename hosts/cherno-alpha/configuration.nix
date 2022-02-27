@@ -8,7 +8,7 @@
   nixpkgs.config = {
     packageOverrides = pkgs: {
       blog = import (builtins.fetchTarball 
-          "https://codeberg.org/lunarequest/myblog/archive/be800165ac.tar.gz");
+          "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz");
     };
   };
 
@@ -17,7 +17,6 @@
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 30d";
     };
   };
 
@@ -72,7 +71,7 @@
   # hardware.pulseaudio.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  # services.xserver.libinput.enable = true; 
 
   users.users.root.initialHashedPassword = "";
   #users.motd = "";
