@@ -9,8 +9,12 @@ in
         (hercules-ci-agent + "/module.nix")
     ];
     deployment.targetHost = "192.168.1.2";
-    services.hercules-ci-agent.enable = true;
-    services.hercules-ci-agent.concurrentTasks = 2;
+    services.hercules-ci-agent = {
+        enable = true;
+        settings = {
+            concurrentTasks = 2;
+        };
+    };
     deployment.keys."cluster-join-token.key".keyFile = ../../hosts/cherno-alpha/secrets/cluster-join-token.key;
     deployment.keys."binary-caches.json".keyFile = ../../hosts/cherno-alpha/secrets/binary-caches.json;
   };
