@@ -4,22 +4,14 @@
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/security.nix
+    ../common/nix-config.nix
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
-      blog = import (builtins.fetchTarball 
-          "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz");
+      blog = import (builtins.fetchTarball
+        "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz");
     };
   };
-
-  nix = {
-    settings.auto-optimise-store = true;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-    };
-  };
-
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -31,8 +23,8 @@
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
   networking = {
-        hostName = "cherno-alpha"; # Define your hostname.
-        timeServers = [ "time.cloudflare.com" ]; # time servers for ntp
+    hostName = "cherno-alpha"; # Define your hostname.
+    timeServers = [ "time.cloudflare.com" ]; # time servers for ntp
   };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -83,9 +75,7 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = 
-  with pkgs;
-  [
+  environment.systemPackages = with pkgs; [
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
@@ -109,8 +99,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.nginx = with pkgs;
-  {
+  services.nginx = with pkgs; {
     enable = true;
     virtualHosts = {
       "nullrequest.com" = {
@@ -118,26 +107,26 @@
         root = "${blog.packages.x86_64-linux.website}";
         sslCertificate = "/etc/ssl/nullrequest.pem";
         sslCertificateKey = "/etc/ssl/nullrequest.key";
-        locations = { 
-                "/" = {
-                   index = "index.html index.htm";
-                   extraConfig = ''
-                        location ~* \.(?:css|js)$ {
-                                expires 1M;
-                                add_header Cache-Control "public";
-                                try_files $uri $uri/ =404;
-                        }
-                        location ~* \.(?:json)$ {
-                                expires 1y;
-                                add_header Cache-Control "public";
-                                try_files $uri $uri/ =404;
-                        }
-                        try_files $uri $uri/ =404;
-                   '';   
-                };
+        locations = {
+          "/" = {
+            index = "index.html index.htm";
+            extraConfig = ''
+              location ~* \.(?:css|js)$ {
+                      expires 1M;
+                      add_header Cache-Control "public";
+                      try_files $uri $uri/ =404;
+              }
+              location ~* \.(?:json)$ {
+                      expires 1y;
+                      add_header Cache-Control "public";
+                      try_files $uri $uri/ =404;
+              }
+              try_files $uri $uri/ =404;
+            '';
+          };
 
-        }; 
-        extraConfig = ''error_page 404 404.html;'';
+        };
+        extraConfig = "error_page 404 404.html;";
       };
       "git.nullrequest.com" = {
         onlySSL = true;
@@ -147,10 +136,10 @@
           "/" = {
             proxyPass = "http://192.168.1.57:3000";
             extraConfig = ''
-                proxy_redirect off;
-                proxy_set_header Host $host:$server_port;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_redirect off;
+              proxy_set_header Host $host:$server_port;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             '';
           };
         };
@@ -163,10 +152,10 @@
           "/" = {
             proxyPass = "http://192.168.1.57";
             extraConfig = ''
-                proxy_redirect off;
-                proxy_set_header Host $host:$server_port;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_redirect off;
+              proxy_set_header Host $host:$server_port;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             '';
           };
 

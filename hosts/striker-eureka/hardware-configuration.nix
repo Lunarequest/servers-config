@@ -4,35 +4,33 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   boot.initrd.availableKernelModules = [ "ahci" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/15dc7a5c-5154-493c-aa9c-1b54cde8b03f";
-      fsType = "xfs";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/15dc7a5c-5154-493c-aa9c-1b54cde8b03f";
+    fsType = "xfs";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/24248ee8-f365-45a9-a96c-35beae5a7445";
-      fsType = "xfs";
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/24248ee8-f365-45a9-a96c-35beae5a7445";
+    fsType = "xfs";
+  };
 
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/567be952-a132-4f8f-adb9-a8677881e8ab";
-      fsType = "xfs";
-    };
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/567be952-a132-4f8f-adb9-a8677881e8ab";
+    fsType = "xfs";
+  };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/4652f6a3-02bd-4df3-92a8-f9d1b6eb99a7"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/4652f6a3-02bd-4df3-92a8-f9d1b6eb99a7"; }];
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
 
