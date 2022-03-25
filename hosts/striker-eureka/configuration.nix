@@ -6,7 +6,7 @@
     ./services
     ../common/security.nix
     ../common/nix-config.nix
-  ];
+     ];
 
   nixpkgs.config = {
     allowUnfree = true;

@@ -18,6 +18,8 @@
   # Fix a security hole in place for backwards compatibility. See desc in
   # nixpkgs/nixos/modules/system/boot/loader/systemd-boot/systemd-boot.nix
   boot.loader.systemd-boot.editor = false;
+  
+  systemd.coredump.enable = false;
 
   boot.kernel.sysctl = {
     # The Magic SysRq key is a key combo that allows users connected to the
@@ -71,4 +73,5 @@
     polkit.enable = true;
     rtkit.enable = true;
   };
+  
 }
