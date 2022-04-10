@@ -5,8 +5,7 @@
     ./hardware-configuration.nix
     ../common/security.nix
     ../common/nix-config.nix
-    <nixpkgs/nixos/modules/profiles/hardened.nix>
-  ];
+ ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
       blog = import (builtins.fetchTarball
