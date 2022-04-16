@@ -18,7 +18,7 @@
   # Fix a security hole in place for backwards compatibility. See desc in
   # nixpkgs/nixos/modules/system/boot/loader/systemd-boot/systemd-boot.nix
   boot.loader.systemd-boot.editor = false;
-  
+
   systemd.coredump.enable = false;
 
   boot.kernel.sysctl = {
@@ -66,12 +66,12 @@
   # Change me later!
   users.users.nullrequest.initialPassword = "nixos";
   users.users.root.initialPassword = "nixos";
-  
+
   security = {
     acme.acceptTerms = true;
     audit.enable = true;
     polkit.enable = true;
     rtkit.enable = true;
   };
-  
+
 }

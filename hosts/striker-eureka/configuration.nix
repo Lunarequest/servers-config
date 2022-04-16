@@ -6,14 +6,17 @@
     ./services
     ../common/security.nix
     ../common/nix-config.nix
-     ];
+  ];
 
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = pkgs: {
       cloudflareupdated = {
-        cloudflareupdatedbin = import (builtins.fetchTarball
-          "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz");
+        cloudflareupdatedbin = import (builtins.fetchTarball{
+            url = "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz";
+            sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
+          }
+        );
       };
     };
   };

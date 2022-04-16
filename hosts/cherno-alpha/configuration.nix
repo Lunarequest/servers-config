@@ -5,11 +5,14 @@
     ./hardware-configuration.nix
     ../common/security.nix
     ../common/nix-config.nix
- ];
+  ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
-      blog = import (builtins.fetchTarball
-        "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz");
+      blog = import (builtins.fetchTarball {
+          url  = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
+          sha256 = "178yzdlkfyq2rxlhma0h79j4jgriy88n3jjady9wm8nw8hhg1hfm";
+      }
+      );
     };
   };
 
