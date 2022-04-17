@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }:
 with lib; {
-  options.cloudflareupdated.services.cloudflareupdatedbin.enable =
+  options.cloudflareupdated.services.enable =
     mkEnableOption "Activates service to update ip on cloudflare)";
 
-  config = mkIf config.cloudflareupdated.services.cloudflareupdatedbin.enable {
+  config = mkIf config.cloudflareupdated.services.enable {
         users.users.cloudflareupdated = {
           createHome = true;
           description = "github.com/Lunarequest/cloudflareupdated";
@@ -22,9 +22,9 @@ with lib; {
             Group = "cloudflareupdated";
           };
 
-          script = let cloudflareupdated = pkgs.cloudflareupdated.cloudflareupdatedbin.defaultPackage.x86_64-linux;
+          script = let cloudflareupdated = pkgs.cloudflareupdated.defaultPackage.x86_64-linux;
             in ''
-              exec ${cloudflareupdated}/bin/cloudflareupdated -c /run/secretes/cloudflareupadted
+              exec ${cloudflareupdated}/bin/cloudflareupdated -c /run/secrets/cloudflareupdated
             '';
         };
 

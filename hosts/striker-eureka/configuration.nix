@@ -6,19 +6,21 @@
     ./services
     ../common/security.nix
     ../common/nix-config.nix
-    <sops-nix/modules/sops>
+    "${builtins.fetchTarball {
+          url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
+          sha256 = "1vcjqcgikmjsk3h14pb4z2fzj1ppwyv356k6a340qd48n3qnaf99"; 
+        }
+      }/modules/sops"
   ];
 
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = pkgs: {
-      cloudflareupdated = {
-        cloudflareupdatedbin = import (builtins.fetchTarball {
-          url =
-            "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz";
-          sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
-        });
-      };
+      cloudflareupdated = import (builtins.fetchTarball {
+        url =
+          "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz";
+        sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
+      });
     };
   };
 
@@ -82,7 +84,8 @@
       userServices = true;
     };
   };
-  cloudflareupdated.services = { cloudflareupdatedbin.enable = true; };
+  cloudflareupdated.services.enable = true;
+  
   # Enable sound.
   # sound.enable = true;
   # hardware.pulseaudio.enable = true;
@@ -198,7 +201,6 @@
   networking.firewall.enable = true;
 
   sops.defaultSopsFile = ./services/cloudflareupdated.yaml;
-  sops.age.keyFile = /home/nullrequest/.config/sops/age/keys.txt;
   sops.secrets.cloudflareupdated = { };
 
   # This value determines the NixOS release from which the default

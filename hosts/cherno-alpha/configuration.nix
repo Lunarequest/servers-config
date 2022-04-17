@@ -1,10 +1,15 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/security.nix
-    <sops-nix/modules/sops>
+    ../common/nix-config.nix
+    "${builtins.fetchTarball {
+          url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
+          sha256 = "1vcjqcgikmjsk3h14pb4z2fzj1ppwyv356k6a340qd48n3qnaf99"; 
+        }
+      }/modules/sops" 
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
@@ -69,12 +74,8 @@
 
   services.hercules-ci-agent = {
     enable = true;
-    settings = {
-      concurrentTasks = 2;
-    };
+    settings = { concurrentTasks = 2; };
   };
-
-
 
   users.users.root.initialHashedPassword = "";
   #users.motd = "";

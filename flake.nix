@@ -22,6 +22,7 @@
 
     deploy.nodes = {
       cherno-alpha = {
+        sshUser = "root";
         hostname = "192.168.1.2";
         profiles.system = {
           user = "root";
@@ -31,6 +32,7 @@
       };
       
       striker-eureka = {
+        sshUser = "root";
         hostname = "192.168.1.57";
         profiles = {
           system = {
