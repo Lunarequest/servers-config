@@ -5,7 +5,6 @@
   inputs = {
     deploy-rs.url = "github:serokell/deploy-rs";
     sops-nix.url = "github:Mic92/sops-nix";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
   outputs = { self, nixpkgs, deploy-rs, sops-nix }: {
@@ -30,7 +29,7 @@
             self.nixosConfigurations.cherno-alpha;
         };
       };
-      
+
       striker-eureka = {
         sshUser = "root";
         hostname = "192.168.1.57";

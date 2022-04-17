@@ -5,11 +5,12 @@
     ./hardware-configuration.nix
     ../common/security.nix
     ../common/nix-config.nix
-    "${builtins.fetchTarball {
-          url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-          sha256 = "1vcjqcgikmjsk3h14pb4z2fzj1ppwyv356k6a340qd48n3qnaf99"; 
-        }
-      }/modules/sops" 
+    "${
+      builtins.fetchTarball {
+        url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
+        sha256 = "1vcjqcgikmjsk3h14pb4z2fzj1ppwyv356k6a340qd48n3qnaf99";
+      }
+    }/modules/sops"
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
@@ -74,7 +75,11 @@
 
   services.hercules-ci-agent = {
     enable = true;
-    settings = { concurrentTasks = 2; };
+    settings = {
+      concurrentTasks = 2;
+      staticSecretsDirectory = "/run/secrets/";
+    };
+
   };
 
   users.users.root.initialHashedPassword = "";
@@ -84,7 +89,9 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
   };
-
+  sops.defaultSopsFile = ./herculeci.yaml;
+  sops.secrets."binary-caches.json" = { };
+  sops.secrets."cluster-join-token.key" = { };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
