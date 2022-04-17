@@ -13,18 +13,8 @@ with lib; {
           extraGroups = [ "keys" ];
         };
 
-        deployment.keys.cloudflareupdated = {
-          text = builtins.readFile ./secrets/settings.yaml;
-          user = "cloudflareupdated";
-          group = "cloudflareupdated";
-          permissions = "0640";
-        };
-
         systemd.services.cloudflareupdated = {
           wantedBy =  [ "multi-user.target" ];
-          after = [ "cloudflareupdated-key.service" ];
-          wants = [ "cloudflareupdated-key.service" ];
-
 
           serviceConfig = {
             Type = "oneshot";
@@ -34,7 +24,7 @@ with lib; {
 
           script = let cloudflareupdated = pkgs.cloudflareupdated.cloudflareupdatedbin.defaultPackage.x86_64-linux;
             in ''
-              exec ${cloudflareupdated}/bin/cloudflareupdated -c /run/keys/cloudflareupdated
+              exec ${cloudflareupdated}/bin/cloudflareupdated -c /run/secretes/cloudflareupadted
             '';
         };
 

@@ -6,6 +6,7 @@
     ./services
     ../common/security.nix
     ../common/nix-config.nix
+    <sops-nix/modules/sops>
   ];
 
   nixpkgs.config = {
@@ -195,6 +196,10 @@
   networking.firewall.allowedUDPPorts = [ 631 ];
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
+
+  sops.defaultSopsFile = ./services/cloudflareupdated.yaml;
+  sops.age.keyFile = "~/.config/sops/age/keys.txt";
+  sops.secrets.cloudflareupdated = {};
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

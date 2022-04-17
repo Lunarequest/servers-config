@@ -3,8 +3,9 @@
 
   # For accessing `deploy-rs`'s utility Nix functions
   inputs.deploy-rs.url = "github:serokell/deploy-rs";
+  inputs.sops-nix.url = github:Mic92/sops-nix;
 
-  outputs = { self, nixpkgs, deploy-rs }: {
+  outputs = { self, nixpkgs, deploy-rs, sops-nix }: {
     nixosConfigurations = {
       cherno-alpha = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";

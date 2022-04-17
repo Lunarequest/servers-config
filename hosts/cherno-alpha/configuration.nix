@@ -10,7 +10,7 @@
     packageOverrides = pkgs: {
       blog = import (builtins.fetchTarball {
           url  = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
-          sha256 = "178yzdlkfyq2rxlhma0h79j4jgriy88n3jjady9wm8nw8hhg1hfm";
+          sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
       }
       );
     };

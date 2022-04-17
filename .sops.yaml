@@ -1,0 +1,17 @@
+keys:
+  - &admin_luna age12fxpdz2huv5zenqn5pmxu4qs0jm2mjcja3scnuyr5yau8jwhv4pq7xf3kk
+  - &server_cherno age1gnpf0z7ftm65q6r9zmelr2zhcslwg3rd90fa5rvkgp5smuy92sqs6xqtnm
+  - &server_striker age1v023jsaemhdyp3lvs48faxnd2rmypv926vv7gc9e0xcccnu5yvgq366dx4
+creation_rules:
+  - path_regex: hosts/cherno-alpha/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *admin_luna
+      - *server_cherno
+  - path_regex: hosts/striker-eureka/services/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *admin_luna
+      - *server_striker
+
+    
