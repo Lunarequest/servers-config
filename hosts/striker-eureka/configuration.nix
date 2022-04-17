@@ -13,11 +13,11 @@
     allowUnfree = true;
     packageOverrides = pkgs: {
       cloudflareupdated = {
-        cloudflareupdatedbin = import (builtins.fetchTarball{
-            url = "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz";
-            sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
-          }
-        );
+        cloudflareupdatedbin = import (builtins.fetchTarball {
+          url =
+            "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz";
+          sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
+        });
       };
     };
   };
@@ -199,7 +199,7 @@
 
   sops.defaultSopsFile = ./services/cloudflareupdated.yaml;
   sops.age.keyFile = /home/nullrequest/.config/sops/age/keys.txt;
-  sops.secrets.cloudflareupdated = {};
+  sops.secrets.cloudflareupdated = { };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

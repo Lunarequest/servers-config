@@ -4,15 +4,14 @@
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/security.nix
-    ../common/nix-config.nix
+    <sops-nix/modules/sops>
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
       blog = import (builtins.fetchTarball {
-          url  = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
-          sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
-      }
-      );
+        url = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
+        sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
+      });
     };
   };
 
@@ -67,6 +66,15 @@
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true; 
+
+  services.hercules-ci-agent = {
+    enable = true;
+    settings = {
+      concurrentTasks = 2;
+    };
+  };
+
+
 
   users.users.root.initialHashedPassword = "";
   #users.motd = "";

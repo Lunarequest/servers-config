@@ -2,8 +2,11 @@
   description = "Deployment for my server cluster";
 
   # For accessing `deploy-rs`'s utility Nix functions
-  inputs.deploy-rs.url = "github:serokell/deploy-rs";
-  inputs.sops-nix.url = "github:Mic92/sops-nix";
+  inputs = {
+    deploy-rs.url = "github:serokell/deploy-rs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  };
 
   outputs = { self, nixpkgs, deploy-rs, sops-nix }: {
     nixosConfigurations = {
@@ -18,17 +21,24 @@
     };
 
     deploy.nodes = {
-      cherno-alpha.profiles.system = {
+      cherno-alpha = {
         hostname = "192.168.1.2";
-        user = "root";
-        path = deploy-rs.lib.x86_64-linux.activate.nixos
-          self.nixosConfigurations.cherno-alpha;
+        profiles.system = {
+          user = "root";
+          path = deploy-rs.lib.x86_64-linux.activate.nixos
+            self.nixosConfigurations.cherno-alpha;
+        };
       };
-      striker-eureka.profiles.system = {
+      
+      striker-eureka = {
         hostname = "192.168.1.57";
-        user = "root";
-        path = deploy-rs.lib.x86_64-linux.activate.nixos
-          self.nixosConfigurations.striker-eureka;
+        profiles = {
+          system = {
+            user = "root";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos
+              self.nixosConfigurations.striker-eureka;
+          };
+        };
       };
     };
 
