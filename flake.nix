@@ -3,7 +3,7 @@
 
   # For accessing `deploy-rs`'s utility Nix functions
   inputs.deploy-rs.url = "github:serokell/deploy-rs";
-  inputs.sops-nix.url = github:Mic92/sops-nix;
+  inputs.sops-nix.url = "github:Mic92/sops-nix";
 
   outputs = { self, nixpkgs, deploy-rs, sops-nix }: {
     nixosConfigurations = {
@@ -24,13 +24,12 @@
         path = deploy-rs.lib.x86_64-linux.activate.nixos
           self.nixosConfigurations.cherno-alpha;
       };
-      striker-eureka.prevent.system = {
+      striker-eureka.profiles.system = {
         hostname = "192.168.1.57";
         user = "root";
         path = deploy-rs.lib.x86_64-linux.activate.nixos
           self.nixosConfigurations.striker-eureka;
       };
-
     };
 
     # This is highly advised, and will prevent many possible mistakes

@@ -198,7 +198,7 @@
   networking.firewall.enable = true;
 
   sops.defaultSopsFile = ./services/cloudflareupdated.yaml;
-  sops.age.keyFile = "~/.config/sops/age/keys.txt";
+  sops.age.keyFile = /home/nullrequest/.config/sops/age/keys.txt;
   sops.secrets.cloudflareupdated = {};
 
   # This value determines the NixOS release from which the default
