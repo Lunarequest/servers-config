@@ -16,7 +16,7 @@
     packageOverrides = pkgs: {
       blog = import (builtins.fetchTarball {
         url = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
-        sha256 = "0hsvmmhawzj06fbs03ydvy232njs0lkrz04y0pvx4gq63bzasvj6";
+        sha256 = "0k76js5g2wcqzaag8g6baqn2lxykxa70j4fikkxwk6iq5qmz3i6m";
       });
     };
   };
@@ -90,8 +90,12 @@
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
   };
   sops.defaultSopsFile = ./herculeci.yaml;
-  sops.secrets."binary-caches.json" = { };
-  sops.secrets."cluster-join-token.key" = { };
+  sops.secrets."binary-caches.json" = {
+    mode = "0755";
+  };
+  sops.secrets."cluster-join-token.key" = {
+    mode = "0755";
+  };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
