@@ -90,12 +90,8 @@
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
   };
   sops.defaultSopsFile = ./herculeci.yaml;
-  sops.secrets."binary-caches.json" = {
-    mode = "0755";
-  };
-  sops.secrets."cluster-join-token.key" = {
-    mode = "0755";
-  };
+  sops.secrets."binary-caches.json" = { mode = "0755"; };
+  sops.secrets."cluster-join-token.key" = { mode = "0755"; };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [

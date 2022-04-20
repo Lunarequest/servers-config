@@ -13,6 +13,10 @@
         system = "x86_64-linux";
         modules = [ ./hosts/cherno-alpha/configuration.nix ];
       };
+      scrappy = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = [ ./hosts/scrappy/configuration.nix ];
+      };
       striker-eureka = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ ./hosts/striker-eureka/configuration.nix ];
@@ -27,6 +31,18 @@
           user = "root";
           path = deploy-rs.lib.x86_64-linux.activate.nixos
             self.nixosConfigurations.cherno-alpha;
+        };
+      };
+
+      scrappy = {
+        sshUser = "root";
+        hostname = "192.168.1.56";
+        profiles = {
+          system = {
+            user = "root";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos
+              self.nixosConfigurations.scrappy;
+          };
         };
       };
 
