@@ -3,6 +3,7 @@
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./cachix.nix
     ../common/security.nix
     ../common/nix-config.nix
     "${
@@ -97,11 +98,8 @@
   environment.systemPackages = with pkgs; [
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    git
-    hugo
     neofetch
-    nixfmt
-    bpytop
+    cachix
     screen
     blog.packages.x86_64-linux.website
   ];
