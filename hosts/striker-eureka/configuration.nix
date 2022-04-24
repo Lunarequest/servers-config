@@ -20,7 +20,7 @@
       cloudflareupdated = import (builtins.fetchTarball {
         url =
           "https://github.com/Lunarequest/cloudflareupdated/archive/refs/heads/mistress.tar.gz";
-        sha256 = "0a4aph7m547lffa8mbaxa5l2wx11g8ciakajba6jcvh0asfs734k";
+        sha256 = "1vcy1mpxj56v71yy1kkb7b218sqmsp00gf9h92g2zfa0pkhsl6dc";
       });
     };
   };

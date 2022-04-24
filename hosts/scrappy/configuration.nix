@@ -36,7 +36,7 @@
     enable = true;
     version = 4;
   };
-
+  nix.trustedUsers = [ "root" "nullrequest" ];
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = false;
   # boot.loader.grub.efiSupport = true;
