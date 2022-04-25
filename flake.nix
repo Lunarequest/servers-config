@@ -1,5 +1,5 @@
 {
-  description = "Deployment for my server cluster";
+  description = "Deployment for shatterdome";
 
   # For accessing `deploy-rs`'s utility Nix functions
   inputs = {
