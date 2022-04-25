@@ -3,8 +3,15 @@
 
   # For accessing `deploy-rs`'s utility Nix functions
   inputs = {
-    deploy-rs.url = "github:serokell/deploy-rs";
-    sops-nix.url = "github:Mic92/sops-nix";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, deploy-rs, sops-nix }: {
