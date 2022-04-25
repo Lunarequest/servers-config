@@ -12,9 +12,13 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    cloudflareupdated = {
+      url = "github:Lunarequest/cloudflareupdated";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, deploy-rs, sops-nix }: {
+  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, cloudflareupdated }: {
     nixosConfigurations = {
       cherno-alpha = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -26,6 +30,7 @@
       };
       striker-eureka = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
         modules = [ ./hosts/striker-eureka/configuration.nix ];
       };
     };

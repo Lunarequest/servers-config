@@ -1,8 +1,7 @@
-
 { config, lib, ... }:
 
 {
   imports = [ ./cloudflareupdated.nix ];
 
-  users.groups.cloudflareupdated = {};
+  users.groups.cloudflareupdated = { };
 }
