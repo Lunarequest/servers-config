@@ -23,63 +23,63 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, cloudflareupdated, myblog }: {
-    nixosConfigurations = {
-      cherno-alpha = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [ ./hosts/cherno-alpha/configuration.nix ];
-      };
-      scrappy = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
-        modules = [ ./hosts/scrappy/configuration.nix ];
-      };
-      striker-eureka = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [ ./hosts/striker-eureka/configuration.nix ];
-      };
-    };
-
-    deploy.nodes = {
-      cherno-alpha = {
-        sshUser = "root";
-        hostname = "192.168.1.2";
-        profiles.system = {
-          user = "root";
-          path = deploy-rs.lib.x86_64-linux.activate.nixos
-            self.nixosConfigurations.cherno-alpha;
+  outputs =
+    inputs@{ self, nixpkgs, deploy-rs, sops-nix, cloudflareupdated, myblog }: {
+      nixosConfigurations = {
+        cherno-alpha = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [ ./hosts/cherno-alpha/configuration.nix ];
+        };
+        scrappy = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          modules = [ ./hosts/scrappy/configuration.nix ];
+        };
+        striker-eureka = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [ ./hosts/striker-eureka/configuration.nix ];
         };
       };
 
-      scrappy = {
-        sshUser = "root";
-        hostname = "192.168.1.56";
-        profiles = {
-          system = {
-            user = "root";
-            path = deploy-rs.lib.aarch64-linux.activate.nixos
-              self.nixosConfigurations.scrappy;
-          };
-        };
-      };
-
-      striker-eureka = {
-        sshUser = "root";
-        hostname = "192.168.1.57";
-        profiles = {
-          system = {
+      deploy.nodes = {
+        cherno-alpha = {
+          sshUser = "root";
+          hostname = "192.168.1.2";
+          profiles.system = {
             user = "root";
             path = deploy-rs.lib.x86_64-linux.activate.nixos
-              self.nixosConfigurations.striker-eureka;
+              self.nixosConfigurations.cherno-alpha;
+          };
+        };
+
+        scrappy = {
+          sshUser = "root";
+          hostname = "192.168.1.56";
+          profiles = {
+            system = {
+              user = "root";
+              path = deploy-rs.lib.aarch64-linux.activate.nixos
+                self.nixosConfigurations.scrappy;
+            };
+          };
+        };
+
+        striker-eureka = {
+          sshUser = "root";
+          hostname = "192.168.1.57";
+          profiles = {
+            system = {
+              user = "root";
+              path = deploy-rs.lib.x86_64-linux.activate.nixos
+                self.nixosConfigurations.striker-eureka;
+            };
           };
         };
       };
-    };
 
-    # This is highly advised, and will prevent many possible mistakes
-    checks =
-      builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy)
-      deploy-rs.lib;
-  };
+      # This is highly advised, and will prevent many possible mistakes
+      checks = builtins.mapAttrs
+        (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+    };
 }
