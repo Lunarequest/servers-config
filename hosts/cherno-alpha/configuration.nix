@@ -15,10 +15,7 @@
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
-      blog = import (builtins.fetchTarball {
-        url = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
-        sha256 = "0k76js5g2wcqzaag8g6baqn2lxykxa70j4fikkxwk6iq5qmz3i6m";
-      });
+      blog = inputs.myblog.outputs.packages.${pkgs.system}.website;
     };
   };
 
@@ -101,7 +98,7 @@
     neofetch
     cachix
     screen
-    blog.packages.x86_64-linux.website
+    blog
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -121,7 +118,7 @@
     virtualHosts = {
       "nullrequest.com" = {
         onlySSL = true;
-        root = "${blog.packages.x86_64-linux.website}";
+        root = "${pkgs.blog}";
         sslCertificate = "/etc/ssl/nullrequest.pem";
         sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {

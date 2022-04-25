@@ -16,12 +16,18 @@
       url = "github:Lunarequest/cloudflareupdated";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    myblog = {
+      type = "tarball";
+      url = "https://codeberg.org/lunarequest/myblog/archive/mistress.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, cloudflareupdated }: {
+  outputs = inputs@{ self, nixpkgs, deploy-rs, sops-nix, cloudflareupdated, myblog }: {
     nixosConfigurations = {
       cherno-alpha = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
         modules = [ ./hosts/cherno-alpha/configuration.nix ];
       };
       scrappy = nixpkgs.lib.nixosSystem {
