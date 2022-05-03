@@ -91,7 +91,7 @@
       staticSecretsDirectory = "/run/secrets/";
     };
   };
-
+  security.rngd.enable = true;
   users.users.root.initialHashedPassword = "";
   # Configure keymap in X11
   # services.xserver.layout = "us";

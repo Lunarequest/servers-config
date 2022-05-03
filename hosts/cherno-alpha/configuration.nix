@@ -27,7 +27,7 @@
   # boot.loader.efi.efiSysMountPoint = "/boot/efi";
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
-
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   networking = {
     hostName = "cherno-alpha"; # Define your hostname.
     timeServers = [ "time.cloudflare.com" ]; # time servers for ntp
