@@ -17,26 +17,20 @@
     }/modules/sops"
   ];
 
-  boot = {
-    kernelPackages = pkgs.linuxPackages_rpi4;
+    boot = {
+    loader.systemd-boot = {
+      enable = true;
+      configurationLimit = 2;
+     };
     tmpOnTmpfs = true;
-    initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
-    # ttyAMA0 is the serial console broken out to the GPIO
-    kernelParams = [
-      "8250.nr_uarts=1"
-      "console=ttyAMA0,115200"
-      "console=tty1"
-      # A lot GUI programs need this, nearly all wayland applications
-      "cma=128M"
-    ];
+    loader.efi.canTouchEfiVariables = false;
+    initrd ={ 
+        compressor = "zstd";
+        availableKernelModules = [ "usbhid" "usb_storage" ];
+     };
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
-  boot.loader.raspberryPi.firmwareConfig = "dtparam=sd_poll_once=on";
-
-  boot.loader.raspberryPi = {
-    enable = true;
-    version = 4;
-  };
   nix.trustedUsers = [ "root" "nullrequest" ];
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = false;
@@ -128,6 +122,8 @@
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     cachix
+    libraspberrypi
+    raspberrypi-eeprom
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
