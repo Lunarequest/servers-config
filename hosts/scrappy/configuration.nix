@@ -17,17 +17,17 @@
     }/modules/sops"
   ];
 
-    boot = {
+  boot = {
     loader.systemd-boot = {
       enable = true;
       configurationLimit = 2;
-     };
+    };
     tmpOnTmpfs = true;
     loader.efi.canTouchEfiVariables = false;
-    initrd ={ 
-        compressor = "zstd";
-        availableKernelModules = [ "usbhid" "usb_storage" ];
-     };
+    initrd = {
+      compressor = "zstd";
+      availableKernelModules = [ "usbhid" "usb_storage" ];
+    };
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
@@ -91,7 +91,6 @@
       staticSecretsDirectory = "/run/secrets/";
     };
   };
-  security.rngd.enable = true;
   users.users.root.initialHashedPassword = "";
   # Configure keymap in X11
   # services.xserver.layout = "us";

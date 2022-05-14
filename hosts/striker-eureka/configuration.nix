@@ -17,7 +17,8 @@
   nixpkgs.config = {
     allowUnfree = true;
     packageOverrides = pkgs: {
-        cloudflareupdated = inputs.cloudflareupdated.packages.${pkgs.system}.cloudflareupdated; 
+      cloudflareupdated =
+        inputs.cloudflareupdated.packages.${pkgs.system}.cloudflareupdated;
     };
   };
 
