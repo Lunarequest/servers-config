@@ -171,6 +171,7 @@
       dbhost = "/run/postgresql";
       adminuser = "nullrequest";
       adminpassFile = "/etc/nextcloudpassword";
+      defaultPhoneRegion = "IN";
     };
     appstoreEnable = true;
   };
