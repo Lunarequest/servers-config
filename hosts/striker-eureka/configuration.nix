@@ -148,12 +148,11 @@
     enableTCPIP = true;
     authentication =
       "local   all             postgres                                peer";
-    ensureDatabases = [ "nextcloud" "gogs-db" ];
+    ensureDatabases = [ "nextcloud"];
     ensureUsers = [{
       name = "nextcloud";
       ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
     }];
-
   };
   systemd.services."nextcloud-setup" = {
     requires = [ "postgresql.service" ];
@@ -174,22 +173,6 @@
       defaultPhoneRegion = "IN";
     };
     appstoreEnable = true;
-  };
-  #gogs
-  services.gogs = {
-    enable = true;
-    domain = "git.nullrequest.com";
-    useWizard = true;
-    rootUrl = "https://git.nullrequest.com/";
-    database = {
-      type = "postgres";
-      port = 5432;
-      host = "/run/postgresql";
-      name = "gogs";
-      user = "gogsdb";
-    };
-    cookieSecure = true;
-    appName = "luna's git server";
   };
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
