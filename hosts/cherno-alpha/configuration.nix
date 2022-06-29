@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [ # Include the results of the hardware scan.
@@ -9,15 +9,10 @@
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "1k9i0982av4681hx2w721rmwy3qfcgz6izqcfkpkbh5y02g1mj6c";
+        sha256 = "00dhb6j14xlbvfam21mpi1zc40d060q6hb24zgr1s6a7npxbmvmd";
       }
     }/modules/sops"
   ];
-  nixpkgs.config = {
-    packageOverrides = pkgs: {
-      blog = inputs.myblog.outputs.packages.${pkgs.system}.website;
-    };
-  };
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -98,7 +93,6 @@
     neofetch
     cachix
     screen
-    blog
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -113,73 +107,9 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.nginx = with pkgs; {
-    enable = true;
-    virtualHosts = {
-      "nullrequest.com" = {
-        onlySSL = true;
-        root = "${pkgs.blog}";
-        sslCertificate = "/etc/ssl/nullrequest.pem";
-        sslCertificateKey = "/etc/ssl/nullrequest.key";
-        locations = {
-          "/" = {
-            index = "index.html index.htm";
-            extraConfig = ''
-              location ~* \.(?:css|js)$ {
-                      expires 1M;
-                      add_header Cache-Control "public";
-                      try_files $uri $uri/ =404;
-              }
-              location ~* \.(?:json)$ {
-                      expires 1y;
-                      add_header Cache-Control "public";
-                      try_files $uri $uri/ =404;
-              }
-              try_files $uri $uri/ =404;
-            '';
-          };
-
-        };
-        extraConfig = "error_page 404 404.html;";
-      };
-      "git.nullrequest.com" = {
-        onlySSL = true;
-        sslCertificate = "/etc/ssl/nullrequest.pem";
-        sslCertificateKey = "/etc/ssl/nullrequest.key";
-        locations = {
-          "/" = {
-            proxyPass = "http://192.168.1.57:3000";
-            extraConfig = ''
-              proxy_redirect off;
-              proxy_set_header Host $host:$server_port;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            '';
-          };
-        };
-      };
-      "nextcloud.nullrequest.com" = {
-        onlySSL = true;
-        sslCertificate = "/etc/ssl/nullrequest.pem";
-        sslCertificateKey = "/etc/ssl/nullrequest.key";
-        locations = {
-          "/" = {
-            proxyPass = "http://192.168.1.57";
-            extraConfig = ''
-              proxy_redirect off;
-              proxy_set_header Host $host:$server_port;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            '';
-          };
-
-        };
-      };
-    };
-  };
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 443 ];
-  networking.firewall.allowedUDPPorts = [ 443 ];
+  # networking.firewall.allowedTCPPorts = [ 443 ];
+  # networking.firewall.allowedUDPPorts = [ 443 ];
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
 

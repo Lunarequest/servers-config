@@ -28,11 +28,11 @@
       nixosConfigurations = {
         cherno-alpha = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
           modules = [ ./hosts/cherno-alpha/configuration.nix ];
         };
         scrappy = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
+          specialArgs = { inherit inputs; };
           modules = [ ./hosts/scrappy/configuration.nix ];
         };
         striker-eureka = nixpkgs.lib.nixosSystem {
