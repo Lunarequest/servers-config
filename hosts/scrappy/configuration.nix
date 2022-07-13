@@ -12,7 +12,7 @@
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "00dhb6j14xlbvfam21mpi1zc40d060q6hb24zgr1s6a7npxbmvmd";
+        sha256 = "11fk89qdjj7jxyl7d804crbngl2i4hwky8rymmaws4xrgd73lnq1";
       }
     }/modules/sops"
   ];
@@ -36,7 +36,6 @@
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
-  nix.trustedUsers = [ "root" "nullrequest" ];
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = false;
   # boot.loader.grub.efiSupport = true;
@@ -61,7 +60,10 @@
   };
 
   nix = {
-    autoOptimiseStore = true;
+    settings = {
+      trusted-users = [ "root" "nullrequest" ];
+      auto-optimise-store = true;
+    };
     gc = {
       automatic = true;
       dates = "weekly";
