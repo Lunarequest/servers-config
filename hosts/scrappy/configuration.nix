@@ -20,6 +20,7 @@
     packageOverrides = pkgs: {
       blog = inputs.myblog.outputs.packages.${pkgs.system}.website;
     };
+    allowUnfree = true;
   };
 
   boot = {
@@ -34,6 +35,15 @@
       availableKernelModules = [ "usbhid" "usb_storage" ];
     };
     kernelPackages = pkgs.linuxPackages_latest;
+  };
+  
+  virtualisation = {
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      dockerCompat = true;
+    };
   };
 
   # Use the GRUB 2 boot loader.
@@ -57,6 +67,7 @@
   networking = {
     hostName = "scrapy"; # Define your hostname.
     interfaces.eth0.useDHCP = true;
+    nameservers = [ "100.100.100.100" "8.8.8.8" "1.1.1.1" ];
   };
 
   nix = {
@@ -90,9 +101,10 @@
 
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
+  services.tailscale.enable = true;
 
   services.hercules-ci-agent = {
-    enable = true;
+    enable = enable;
     settings = {
       concurrentTasks = 2;
       staticSecretsDirectory = "/run/secrets/";
@@ -123,12 +135,13 @@
   };
 
   # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # $ nix seaenableget
   environment.systemPackages = with pkgs; [
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     cachix
     blog
+    screen
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -151,11 +164,10 @@
   services.nginx = with pkgs; {
     enable = true;
     virtualHosts = {
-      "nullrequest.com" = {
-        onlySSL = true;
+      "nullrequest.com 192.168.1.56" = {
         root = "${pkgs.blog}";
-        sslCertificate = "/etc/ssl/nullrequest.pem";
-        sslCertificateKey = "/etc/ssl/nullrequest.key";
+        #sslCertificate = "/etc/ssl/nullrequest.pem";
+        #sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {
           "/" = {
             index = "index.html index.htm";
@@ -178,9 +190,9 @@
         extraConfig = "error_page 404 404.html;";
       };
       "git.nullrequest.com" = {
-        onlySSL = true;
-        sslCertificate = "/etc/ssl/nullrequest.pem";
-        sslCertificateKey = "/etc/ssl/nullrequest.key";
+        #onlySSL = true;
+        #sslCertificate = "/etc/ssl/nullrequest.pem";
+        #sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {
           "/" = {
             proxyPass = "http://192.168.1.57:3000";
@@ -194,9 +206,9 @@
         };
       };
       "nextcloud.nullrequest.com" = {
-        onlySSL = true;
-        sslCertificate = "/etc/ssl/nullrequest.pem";
-        sslCertificateKey = "/etc/ssl/nullrequest.key";
+        #onlySSL = true;
+        #sslCertificate = "/etc/ssl/nullrequest.pem";
+        #sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {
           "/" = {
             proxyPass = "http://192.168.1.57";
@@ -213,11 +225,12 @@
     };
   };
 
+  
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = true;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

@@ -83,6 +83,7 @@
       userServices = true;
     };
   };
+  services.tailscale.enable = true;
   cloudflareupdated.services.enable = true;
 
   # Enable sound.
@@ -180,6 +181,7 @@
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 80 443 631 3000 8080 ];
   networking.firewall.allowedUDPPorts = [ 631 ];
+  networking.firewall.checkReversePath = "loose";
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
 
