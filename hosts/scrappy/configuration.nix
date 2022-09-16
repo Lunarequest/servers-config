@@ -12,9 +12,10 @@
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "11fk89qdjj7jxyl7d804crbngl2i4hwky8rymmaws4xrgd73lnq1";
+        sha256 = "1vr6nxvhg7zfc5lrfvvsqj3396x6i2hc8w513zai445kwl7h3q1v";
       }
     }/modules/sops"
+    inputs.cloudflared.nixosModules.cloudflared
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
@@ -36,7 +37,7 @@
     };
     kernelPackages = pkgs.linuxPackages_latest;
   };
-  
+
   virtualisation = {
     podman = {
       enable = true;
@@ -68,6 +69,7 @@
     hostName = "scrapy"; # Define your hostname.
     interfaces.eth0.useDHCP = true;
     nameservers = [ "100.100.100.100" "8.8.8.8" "1.1.1.1" ];
+    hosts = { "127.0.0.1" = [ "nextcloud" ]; };
   };
 
   nix = {
@@ -104,7 +106,7 @@
   services.tailscale.enable = true;
 
   services.hercules-ci-agent = {
-    enable = enable;
+    enable = false;
     settings = {
       concurrentTasks = 2;
       staticSecretsDirectory = "/run/secrets/";
@@ -141,6 +143,7 @@
     wget
     cachix
     blog
+    cloudflared
     screen
   ];
 
@@ -153,10 +156,10 @@
   # };
 
   # List services that you want to enable:
-
-  sops.defaultSopsFile = ./herculeci.yaml;
-  sops.secrets."binary-caches.json" = { mode = "0755"; };
-  sops.secrets."cluster-join-token.key" = { mode = "0755"; };
+  services.cloudflared = {
+    enable = true;
+    tokenFile = "/run/secrets/data";
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -164,10 +167,11 @@
   services.nginx = with pkgs; {
     enable = true;
     virtualHosts = {
-      "nullrequest.com 192.168.1.56" = {
+      "127.0.0.1" = {
         root = "${pkgs.blog}";
-        #sslCertificate = "/etc/ssl/nullrequest.pem";
-        #sslCertificateKey = "/etc/ssl/nullrequest.key";
+        onlySSL = true;
+        sslCertificate = "/etc/ssl/nullrequest.pem";
+        sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {
           "/" = {
             index = "index.html index.htm";
@@ -189,26 +193,15 @@
         };
         extraConfig = "error_page 404 404.html;";
       };
-      "git.nullrequest.com" = {
-        #onlySSL = true;
-        #sslCertificate = "/etc/ssl/nullrequest.pem";
-        #sslCertificateKey = "/etc/ssl/nullrequest.key";
-        locations = {
-          "/" = {
-            proxyPass = "http://192.168.1.57:3000";
-            extraConfig = ''
-              proxy_redirect off;
-              proxy_set_header Host $host:$server_port;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            '';
-          };
-        };
-      };
       "nextcloud.nullrequest.com" = {
-        #onlySSL = true;
-        #sslCertificate = "/etc/ssl/nullrequest.pem";
-        #sslCertificateKey = "/etc/ssl/nullrequest.key";
+        onlySSL = true;
+        listen = [{
+          addr = "127.0.0.1";
+          port = 8443;
+          ssl = true;
+        }];
+        sslCertificate = "/etc/ssl/nullrequest.pem";
+        sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {
           "/" = {
             proxyPass = "http://192.168.1.57";
@@ -225,7 +218,13 @@
     };
   };
 
-  
+  sops.defaultSopsFile = ./token;
+  sops.secrets.data = {
+    mode = "0440";
+    owner = "cloudflared";
+    group = "cloudflared";
+  };
+
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 443 ];
   networking.firewall.allowedUDPPorts = [ 443 ];

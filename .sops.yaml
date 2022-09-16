@@ -1,20 +1,14 @@
 keys:
-  - &admin_luna age1wg0ywsct5mmkp3mhg7e6nz53h4k5ksyxp4r5hgvwn9nexmnc4vlshawx2u
-  - &server_cherno age1gnpf0z7ftm65q6r9zmelr2zhcslwg3rd90fa5rvkgp5smuy92sqs6xqtnm
+  - &admin_luna age1dm8jqk7u9mcfg0wgcs0fllju33lp2wk706xdf9s0nrcdhrvseqsshh302h
   - &server_striker age1v023jsaemhdyp3lvs48faxnd2rmypv926vv7gc9e0xcccnu5yvgq366dx4
   - &server_scrapy age1p6d96298ngyvsagg0usllr5c7u7z376vdu0l2ydenxkprdwxrpss0lcred
 creation_rules:
-  - path_regex: hosts/cherno-alpha/[^/]+\.yaml$
-    key_groups:
-    - age:
-      - *admin_luna
-      - *server_cherno
-  - path_regex: hosts/striker-eureka/services/[^/]+\.yaml$
+  - path_regex: hosts/striker-eureka/token
     key_groups:
     - age:
       - *admin_luna
       - *server_striker
-  - path_regex: hosts/scrappy/[^/]+\.yaml$
+  - path_regex: hosts/scrappy/token
     key_groups:
     - age: 
       - *admin_luna

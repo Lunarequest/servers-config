@@ -3,24 +3,18 @@
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./services
     ../common/security.nix
     ../common/nix-config.nix
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "11fk89qdjj7jxyl7d804crbngl2i4hwky8rymmaws4xrgd73lnq1";
+        sha256 = "1vr6nxvhg7zfc5lrfvvsqj3396x6i2hc8w513zai445kwl7h3q1v";
       }
     }/modules/sops"
+    inputs.cloudflared.nixosModules.cloudflared
   ];
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    packageOverrides = pkgs: {
-      cloudflareupdated =
-        inputs.cloudflareupdated.packages.${pkgs.system}.cloudflareupdated;
-    };
-  };
+  nixpkgs.config = { allowUnfree = true; };
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -84,8 +78,6 @@
     };
   };
   services.tailscale.enable = true;
-  cloudflareupdated.services.enable = true;
-
   # Enable sound.
   # sound.enable = true;
   # hardware.pulseaudio.enable = true;
@@ -142,6 +134,12 @@
   # };
 
   # List services that you want to enable:
+
+  services.cloudflared = {
+    enable = true;
+    tokenFile = "/run/secrets/data";
+  };
+
   # postgresql for nextcloud
   services.postgresql = {
     enable = true;
@@ -149,7 +147,7 @@
     enableTCPIP = true;
     authentication =
       "local   all             postgres                                peer";
-    ensureDatabases = [ "nextcloud"];
+    ensureDatabases = [ "nextcloud" ];
     ensureUsers = [{
       name = "nextcloud";
       ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
@@ -162,10 +160,10 @@
   # nextcloud setup
   services.nextcloud = {
     enable = true;
-    https = true;
     hostName = "nextcloud.nullrequest.com";
     package = pkgs.nextcloud24;
     config = {
+      extraTrustedDomains = [ "127.0.0.1" "localhost" ];
       dbtype = "pgsql";
       dbuser = "nextcloud";
       dbhost = "/run/postgresql";
@@ -175,22 +173,21 @@
     };
     appstoreEnable = true;
   };
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
+  sops.defaultSopsFile = ./token;
+  sops.secrets.data = {
+    mode = "0440";
+    owner = "cloudflared";
+    group = "cloudflared";
+  };
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 80 443 631 3000 8080 ];
   networking.firewall.allowedUDPPorts = [ 631 ];
   networking.firewall.checkReversePath = "loose";
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
-
-  sops.defaultSopsFile = ./services/cloudflareupdated.yaml;
-  sops.secrets.cloudflareupdated = {
-    mode = "0440";
-    owner = config.users.users.cloudflareupdated.name;
-    group = config.users.users.cloudflareupdated.group;
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

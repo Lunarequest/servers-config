@@ -9,7 +9,7 @@
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "11fk89qdjj7jxyl7d804crbngl2i4hwky8rymmaws4xrgd73lnq1";
+        sha256 = "1vr6nxvhg7zfc5lrfvvsqj3396x6i2hc8w513zai445kwl7h3q1v";
       }
     }/modules/sops"
   ];
