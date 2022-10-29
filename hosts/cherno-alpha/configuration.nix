@@ -1,7 +1,10 @@
-{ config, pkgs, ... }:
-
 {
-  imports = [ # Include the results of the hardware scan.
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./cachix.nix
     ../common/security.nix
@@ -9,7 +12,7 @@
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "1vr6nxvhg7zfc5lrfvvsqj3396x6i2hc8w513zai445kwl7h3q1v";
+        sha256 = "0qvbgq2di15x316w5c7r9xn5yw63l2k7h3vmfbh43ljb26f8amxb";
       }
     }/modules/sops"
   ];
@@ -25,7 +28,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   networking = {
     hostName = "cherno-alpha"; # Define your hostname.
-    timeServers = [ "time.cloudflare.com" ]; # time servers for ntp
+    timeServers = ["time.cloudflare.com"]; # time servers for ntp
   };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -64,27 +67,20 @@
   # hardware.pulseaudio.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true; 
-
-  services.hercules-ci-agent = {
-    enable = true;
-    settings = {
-      concurrentTasks = 2;
-      staticSecretsDirectory = "/run/secrets/";
-    };
-
-  };
+  # services.xserver.libinput.enable = true;
 
   users.users.root.initialHashedPassword = "";
   #users.motd = "";
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nullrequest = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
   };
-  sops.defaultSopsFile = ./herculeci.yaml;
-  sops.secrets."binary-caches.json" = { mode = "0755"; };
-  sops.secrets."cluster-join-token.key" = { mode = "0755"; };
+  /*
+     sops.defaultSopsFile = ./herculeci.yaml;
+  sops.secrets."binary-caches.json" = {mode = "0755";};
+  sops.secrets."cluster-join-token.key" = {mode = "0755";};
+  */
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -120,6 +116,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "21.11"; # Did you read the comment?
-
 }
-

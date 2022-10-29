@@ -1,21 +1,25 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, inputs, pkgs, ... }:
-
 {
-  imports = [ # Include the results of the hardware scan.
+  config,
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/security.nix
     ./cachix.nix
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "1vr6nxvhg7zfc5lrfvvsqj3396x6i2hc8w513zai445kwl7h3q1v";
+        sha256 = "0qvbgq2di15x316w5c7r9xn5yw63l2k7h3vmfbh43ljb26f8amxb";
       }
     }/modules/sops"
     inputs.cloudflared.nixosModules.cloudflared
+    inputs.arion.nixosModules.arion
   ];
   nixpkgs.config = {
     packageOverrides = pkgs: {
@@ -33,17 +37,28 @@
     loader.efi.canTouchEfiVariables = false;
     initrd = {
       compressor = "zstd";
-      availableKernelModules = [ "usbhid" "usb_storage" ];
+      availableKernelModules = ["usbhid" "usb_storage"];
     };
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
   virtualisation = {
+    docker.enable = false;
     podman = {
       enable = true;
-
+      dockerSocket.enable = true;
+      defaultNetwork.dnsname.enable = true;
       # Create a `docker` alias for podman, to use it as a drop-in replacement
       dockerCompat = true;
+    };
+  };
+
+  virtualisation.arion = {
+    backend = "podman-socket";
+    projects.blog.settings = {
+      # Specify you project here, or import it from a file.
+      # NOTE: This does NOT use ./arion-pkgs.nix, but defaults to NixOS' pkgs.
+      imports = [./arion-compose.nix];
     };
   };
 
@@ -68,13 +83,13 @@
   networking = {
     hostName = "scrapy"; # Define your hostname.
     interfaces.eth0.useDHCP = true;
-    nameservers = [ "100.100.100.100" "8.8.8.8" "1.1.1.1" ];
-    hosts = { "127.0.0.1" = [ "nextcloud" ]; };
+    nameservers = ["100.100.100.100" "8.8.8.8" "1.1.1.1"];
+    hosts = {"127.0.0.1" = ["nextcloud"];};
   };
 
   nix = {
     settings = {
-      trusted-users = [ "root" "nullrequest" ];
+      trusted-users = ["root" "nullrequest"];
       auto-optimise-store = true;
     };
     gc = {
@@ -133,18 +148,21 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nullrequest = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = ["wheel" "podman"]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix seaenableget
   environment.systemPackages = with pkgs; [
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    git
     wget
     cachix
     blog
     cloudflared
     screen
+    docker-client
+    nodejs-16_x
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -169,9 +187,9 @@
     virtualHosts = {
       "127.0.0.1" = {
         root = "${pkgs.blog}";
-        onlySSL = true;
         sslCertificate = "/etc/ssl/nullrequest.pem";
         sslCertificateKey = "/etc/ssl/nullrequest.key";
+        onlySSL = true;
         locations = {
           "/" = {
             index = "index.html index.htm";
@@ -189,35 +207,38 @@
               try_files $uri $uri/ =404;
             '';
           };
-
         };
         extraConfig = "error_page 404 404.html;";
       };
       "nextcloud.nullrequest.com" = {
         onlySSL = true;
-        listen = [{
-          addr = "127.0.0.1";
-          port = 8443;
-          ssl = true;
-        }];
+        listen = [
+          {
+            addr = "0.0.0.0";
+            port = 8443;
+          }
+        ];
         sslCertificate = "/etc/ssl/nullrequest.pem";
         sslCertificateKey = "/etc/ssl/nullrequest.key";
         locations = {
           "/" = {
-            proxyPass = "http://192.168.1.57";
+            proxyPass = "https://192.168.1.5";
             extraConfig = ''
-              proxy_redirect off;
-              proxy_set_header Host $host:$server_port;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_redirect     off;
+              proxy_read_timeout 60s;
+
+              proxy_set_header          Host            nextcloud.nullrequest.com;
+              proxy_set_header          X-Real-IP       $remote_addr;
+              proxy_set_header          X-Forwarded-For $proxy_add_x_forwarded_for;
+
+              client_max_body_size 50M;
             '';
           };
-
         };
       };
     };
   };
-
+  services.journald.extraConfig = "Storage=volatile";
   sops.defaultSopsFile = ./token;
   sops.secrets.data = {
     mode = "0440";
@@ -226,8 +247,8 @@
   };
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 443 ];
-  networking.firewall.allowedUDPPorts = [ 443 ];
+  networking.firewall.allowedTCPPorts = [443];
+  networking.firewall.allowedUDPPorts = [443];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
 

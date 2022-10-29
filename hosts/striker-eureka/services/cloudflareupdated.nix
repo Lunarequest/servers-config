@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib; {
   options.cloudflareupdated.services.enable =
     mkEnableOption "Activates service to update ip on cloudflare)";
@@ -10,11 +15,11 @@ with lib; {
       isSystemUser = true;
       group = "cloudflareupdated";
       home = "/srv/cloudlareupdated/cloudflare";
-      extraGroups = [ "keys" ];
+      extraGroups = ["keys"];
     };
 
     systemd.services.cloudflareupdated = {
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = ["multi-user.target"];
 
       serviceConfig = {
         Type = "oneshot";
@@ -22,15 +27,16 @@ with lib; {
         Group = "cloudflareupdated";
       };
 
-      script = let cloudflareupdated = pkgs.cloudflareupdated;
+      script = let
+        cloudflareupdated = pkgs.cloudflareupdated;
       in ''
         exec ${cloudflareupdated}/bin/cloudflareupdated -c /run/secrets/cloudflareupdated
       '';
     };
 
     systemd.timers.cloudflareupdated = {
-      wantedBy = [ "timers.target" ];
-      partOf = [ "cloudflareupdated.service" ];
+      wantedBy = ["timers.target"];
+      partOf = ["cloudflareupdated.service"];
       timerConfig = {
         OnBootSec = 120;
         OnUnitActiveSec = 1200;

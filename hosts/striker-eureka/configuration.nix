@@ -1,20 +1,24 @@
-{ config, pkgs, inputs, ... }:
-
 {
-  imports = [ # Include the results of the hardware scan.
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../common/security.nix
     ../common/nix-config.nix
     "${
       builtins.fetchTarball {
         url = "https://github.com/Mic92/sops-nix/archive/master.tar.gz";
-        sha256 = "1vr6nxvhg7zfc5lrfvvsqj3396x6i2hc8w513zai445kwl7h3q1v";
+        sha256 = "0fqlk3mrbz5mnj8r9wjx06wvhngmmn2x7xvrnw0d2vzw3bgb41rc";
       }
     }/modules/sops"
     inputs.cloudflared.nixosModules.cloudflared
   ];
 
-  nixpkgs.config = { allowUnfree = true; };
+  nixpkgs.config = {allowUnfree = true;};
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -28,7 +32,7 @@
 
   networking = {
     hostName = "striker-eureka"; # Define your hostname.
-    timeServers = [ "time.cloudflare.com" ];
+    timeServers = ["time.cloudflare.com"];
   };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -64,10 +68,10 @@
 
   services.printing = {
     enable = true;
-    drivers = with pkgs; [ epson-201401w ];
+    drivers = with pkgs; [epson-201401w];
     browsing = true;
-    listenAddresses = [ "*:631" ];
-    allowFrom = [ "all" ];
+    listenAddresses = ["*:631"];
+    allowFrom = ["all"];
     defaultShared = true;
   };
   services.avahi = {
@@ -89,15 +93,19 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nullrequest = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-    subUidRanges = [{
-      startUid = 100000;
-      count = 65536;
-    }];
-    subGidRanges = [{
-      startGid = 100000;
-      count = 65536;
-    }];
+    extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
+    subUidRanges = [
+      {
+        startUid = 100000;
+        count = 65536;
+      }
+    ];
+    subGidRanges = [
+      {
+        startGid = 100000;
+        count = 65536;
+      }
+    ];
   };
   virtualisation = {
     podman = {
@@ -145,17 +153,18 @@
     enable = true;
     package = pkgs.postgresql;
     enableTCPIP = true;
-    authentication =
-      "local   all             postgres                                peer";
-    ensureDatabases = [ "nextcloud" ];
-    ensureUsers = [{
-      name = "nextcloud";
-      ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
-    }];
+    authentication = "local   all             postgres                                peer";
+    ensureDatabases = ["nextcloud"];
+    ensureUsers = [
+      {
+        name = "nextcloud";
+        ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
+      }
+    ];
   };
   systemd.services."nextcloud-setup" = {
-    requires = [ "postgresql.service" ];
-    after = [ "postgresql.service" ];
+    requires = ["postgresql.service"];
+    after = ["postgresql.service"];
   };
   # nextcloud setup
   services.nextcloud = {
@@ -163,7 +172,7 @@
     hostName = "nextcloud.nullrequest.com";
     package = pkgs.nextcloud24;
     config = {
-      extraTrustedDomains = [ "127.0.0.1" "localhost" ];
+      extraTrustedDomains = ["127.0.0.1" "localhost"];
       dbtype = "pgsql";
       dbuser = "nextcloud";
       dbhost = "/run/postgresql";
@@ -183,8 +192,8 @@
     group = "cloudflared";
   };
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 80 443 631 3000 8080 ];
-  networking.firewall.allowedUDPPorts = [ 631 ];
+  networking.firewall.allowedTCPPorts = [80 443 631 3000 8080];
+  networking.firewall.allowedUDPPorts = [631];
   networking.firewall.checkReversePath = "loose";
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
@@ -196,6 +205,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "21.11"; # Did you read the comment?
-
 }
-

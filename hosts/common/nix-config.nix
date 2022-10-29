@@ -1,5 +1,9 @@
-{ pkgs, config, lib, ... }: {
-
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   nix = {
     package = pkgs.nixUnstable;
     extraOptions = ''
@@ -10,7 +14,5 @@
       automatic = true;
       dates = "weekly";
     };
-
   };
-
 }
